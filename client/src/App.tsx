@@ -39,15 +39,19 @@ function App() {
     })
   };
   const onSendMessage = (ev) => {
+    ev.preventDefault()
+    if(!message) return;
     setSendingMessage(true)
     ioClient.emit('user:message-send', message, rooms, () => {
       setMessage('');
       setSendingMessage(false)
     });
-
+    
   };
   
   const onSendRoom = (ev) => {
+    ev.preventDefault()
+    if(!room) return;
     ioClient.emit('user:room-join', room);
   };
 
@@ -103,22 +107,22 @@ function App() {
             </div>
             <div className="chat-inputs-wrapper mt-2">
               <div className="chat-input-message">
-                <div className="row gx-1">
+                <form className="row gx-1" onSubmit={onSendMessage}>
                   <div className="col-md-9 col-7">
-                    <input className='form-control' placeholder='Type your message' type="text" value={message} onInput={handleMessageChange} />
+                    <textarea rows="2" className='form-control' placeholder='Type your message' type="text" value={message} onInput={handleMessageChange}></textarea>
                   </div>
                   <div className="col-md-3 col-5">
-                    <button className="btn btn-primary btn-block w-100" onClick={onSendMessage} disabled={!message || sendingMessage}>Send message</button>
+                    <button className="btn btn-primary btn-block w-100" disabled={!message || sendingMessage}>Send message</button>
                   </div>
-                </div>
-                <div className="row gx-1 mt-2">
+                </form>
+                <form className="row gx-1 mt-2" action='' onSubmit={onSendRoom}>
                   <div className="col-md-9 col-7">
                     <input className='form-control' placeholder='Type your room' type="text" value={room} onInput={handleRoomChange} />
                   </div>
                   <div className="col-md-3 col-5">
-                    <button className="btn btn-warning btn-block w-100" onClick={onSendRoom} disabled={!room || rooms.includes(room)} >Join room</button>
+                    <button className="btn btn-warning btn-block w-100" type='submit' disabled={!room || rooms.includes(room)} >Join room</button>
                   </div>
-                </div>
+                </form>
               </div>
             </div>
           </div>
