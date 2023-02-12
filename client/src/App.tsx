@@ -74,6 +74,7 @@ function App() {
       console.log(`${ioClient.id} joined room: ${room}`);
       staticRooms = [...staticRooms, room]
       setRooms([...staticRooms])
+      setRoom('');
     })
 
 
