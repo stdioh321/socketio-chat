@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  server:
+    container_name: server
+    image: node:16-alpine
+    working_dir: /app
+    volumes:
+      - $PWD/server:/app
+    network_mode: host
+    command: sh -c "npm install && npm run start"
+  client:
+    container_name: client
+    image: node:16-alpine
+    working_dir: /app
+    volumes:
+      - $PWD/client:/app
+    network_mode: host
+    command: sh -c "npm install && sleep 3 && npm run dev -- --port 8080"
+    depends_on:
+      - server
