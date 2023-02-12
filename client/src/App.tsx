@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { createRef, useCallback, useEffect, useRef, useState } from 'react'
 import { io } from 'socket.io-client'
 import './App.css'
 import MessageDto from './MessageDto'
@@ -10,7 +10,7 @@ const ioClient = io('http://localhost:3000',{
 let staticMessages = []
 let staticRooms: string[] = []
 function App() {
-
+  const chatMessagesWrapperRef = useRef()
   const [sendingMessage, setSendingMessage] = useState<boolean>(false);
   const [message, setMessage] = useState('');
   const [room, setRoom] = useState('');
@@ -45,6 +45,8 @@ function App() {
     ioClient.emit('user:message-send', message, rooms, () => {
       setMessage('');
       setSendingMessage(false)
+
+      chatMessagesWrapperRef.current?.scrollTo(0, chatMessagesWrapperRef.current.scrollHeight);
     });
     
   };
@@ -96,7 +98,7 @@ function App() {
           <span hidden={ioClient?.id}>id: {ioClient?.id}</span>
           </h4>
           <div className="chat-wrapper">
-            <div className="chat-messages-wrapper">
+            <div className="chat-messages-wrapper" ref={chatMessagesWrapperRef}>
               <div className="chat-messages">
                 { messages.map((it,idx) => {
                   return <div className='ml-1 mb-2' key={idx}>
