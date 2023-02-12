@@ -1,0 +1,22 @@
+.message-wrapper{
+  display: flex;
+  justify-content: flex-start;
+}
+.message-wrapper.me{
+  justify-content: flex-end;
+}
+.content{
+  max-width: 70%;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  border: solid 1px gray;
+  border-radius: 5px;
+}
+.user {
+  font-size: smaller;
+  color: gray;
+}
+.message{
+
+}
