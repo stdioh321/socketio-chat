@@ -9,6 +9,7 @@ export default function Message(props) {
     <div className="content">
       <div hidden={me} className='user'>{me ? 'you': id}</div>
       <div className='message'>{message}</div>
+      <div className='room'>{room.join(',')}</div>
       <div className='created-at'>{theDate || ''}</div>
     </div>
   </div>

@@ -8,8 +8,13 @@ const ioClient = io('http://localhost:3000',{
 })
 
 let staticMessages = []
+let staticRooms: string[] = []
 function App() {
+
+  const [sendingMessage, setSendingMessage] = useState<boolean>(false);
   const [message, setMessage] = useState('');
+  const [room, setRoom] = useState('');
+  const [rooms, setRooms] = useState<string[]>([]);
   const [messages, setMessages] = useState<MessageDto[]>([]);
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
@@ -23,15 +28,27 @@ function App() {
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
   };
+  const handleRoomChange = (event) => {
+    setRoom(event.target.value);
+  };
+  const handleLeaveRoom = (room) => {
+    ioClient.emit('user:room-leave', room, () => {
+      console.log(`${ioClient.id} leave room: ${room}`);
+      staticRooms = staticRooms.filter(it=>!it==room)
+      setRooms([...staticRooms])
+    })
+  };
   const onSendMessage = (ev) => {
-    ioClient.emit('user:message-send', message);
-    updateMessages({
-      id: ioClient.id,
-      message: message,
-      room: undefined,
-      createdAt: new Date()
+    setSendingMessage(true)
+    ioClient.emit('user:message-send', message, rooms, () => {
+      setMessage('');
+      setSendingMessage(false)
     });
-    setMessage('');
+
+  };
+  
+  const onSendRoom = (ev) => {
+    ioClient.emit('user:room-join', room);
   };
 
   useEffect(() => {
@@ -46,12 +63,20 @@ function App() {
       console.log(`id: ${msg.id} -> message: ${msg.message}`);
       updateMessages(msg)
     })
+    ioClient.on('user:room-joined', (room:string) => {
+      if(staticRooms.includes(room)) return
+      console.log(`${ioClient.id} joined room: ${room}`);
+      staticRooms = [...staticRooms, room]
+      setRooms([...staticRooms])
+    })
 
 
     return () => {
       ioClient.off('connect')
       ioClient.off('disconnect')
       ioClient.off('user:message-received')
+      ioClient.off('user:room-joined')
+      ioClient.off('user:room-leave')
     }
   },[messages])
   return (
@@ -81,13 +106,39 @@ function App() {
                 <div className="row gx-1">
                   <div className="col-md-9 col-7">
                     <input className='form-control' placeholder='Type your message' type="text" value={message} onInput={handleMessageChange} />
-                    </div>
+                  </div>
                   <div className="col-md-3 col-5">
-                    <button className="btn btn-primary btn-block w-100" onClick={onSendMessage} disabled={!message}>Send</button>
+                    <button className="btn btn-primary btn-block w-100" onClick={onSendMessage} disabled={!message || sendingMessage}>Send message</button>
+                  </div>
+                </div>
+                <div className="row gx-1 mt-2">
+                  <div className="col-md-9 col-7">
+                    <input className='form-control' placeholder='Type your room' type="text" value={room} onInput={handleRoomChange} />
+                  </div>
+                  <div className="col-md-3 col-5">
+                    <button className="btn btn-warning btn-block w-100" onClick={onSendRoom} disabled={!room || rooms.includes(room)} >Join room</button>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="col-md-3">
+
+          <div className={rooms.length  ? null: 'd-none'}>
+            <h3>Rooms you are in</h3>
+            <div>
+            {
+              rooms.map((it,idx)=>{
+                return (<div className='d-flex justify-content-between' key={idx}>
+                  <div>{it}</div>
+                  <div>
+                    <button className="btn btn-danger" onClick={()=>handleLeaveRoom(it)}>&otimes;</button>
+                  </div>
+                </div>)
+              })
+            }
+          </div>
           </div>
         </div>
       </div>
