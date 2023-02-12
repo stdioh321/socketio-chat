@@ -28,7 +28,8 @@ function App() {
     updateMessages({
       id: ioClient.id,
       message: message,
-      room: undefined
+      room: undefined,
+      createdAt: new Date()
     });
     setMessage('');
   };
@@ -70,7 +71,7 @@ function App() {
               <div className="chat-messages">
                 { messages.map((it,idx) => {
                   return <div className='ml-1 mb-2' key={idx}>
-                    <Message id={it.id} message={it.message} room={it.room} me={ioClient.id === it.id} />
+                    <Message id={it.id} message={it.message} room={it.room} me={ioClient.id === it.id} createdAt={it.createdAt} />
                   </div>
                 })}
               </div>

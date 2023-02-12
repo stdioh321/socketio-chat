@@ -20,7 +20,8 @@ io.on('connect', (socket) => {
     socket.broadcast.emit('user:message-received', {
       id:socket.id,
       message: message,
-      room: null
+      room: null,
+      createdAt: new Date()
     })
   })
 })

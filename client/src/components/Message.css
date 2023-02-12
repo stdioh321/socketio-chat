@@ -5,18 +5,27 @@
 .message-wrapper.me{
   justify-content: flex-end;
 }
+.message-wrapper.me .content{
+  background-color: #24bf41;
+}
 .content{
   max-width: 70%;
+  min-width: 200px;
   padding: 5px;
   display: flex;
   flex-direction: column;
-  border: solid 1px gray;
+  background-color: #2596be;
   border-radius: 5px;
 }
 .user {
-  font-size: smaller;
-  color: gray;
+  font-size: 10px;
+  color: white;
 }
 .message{
-
+  
+}
+.created-at{
+  text-align: right;
+  font-size: 10px;
+  font-style:italic;
 }
