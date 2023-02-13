@@ -7,8 +7,7 @@ const ioClient = io('http://localhost:3000',{
   withCredentials: false
 })
 
-let staticMessages = []
-let staticRooms: string[] = []
+let rooms: string[] = []
 function App() {
   const chatMessagesWrapperRef = useRef()
   const [sendingMessage, setSendingMessage] = useState<boolean>(false);
@@ -21,9 +20,7 @@ function App() {
 
   const updateMessages = (message: MessageDto) => {
     if(!message) return
-    const tempMessages = [...messages, message];
-    staticMessages = [...tempMessages]
-    setMessages(staticMessages);
+    setMessages((list)=>[...list, message]);
   }
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
@@ -33,9 +30,7 @@ function App() {
   };
   const handleLeaveRoom = (room) => {
     ioClient.emit('user:room-leave', room, () => {
-      console.log(`${ioClient.id} leave room: ${room}`);
-      staticRooms = staticRooms.filter(it=>!it==room)
-      setRooms([...staticRooms])
+      setRooms((list)=>[...list, room])
     })
   };
   const onSendMessage = (ev) => {
@@ -59,7 +54,7 @@ function App() {
 
   useEffect(() => {
     ioClient.on('connect', () => {
-      // console.log(`socket connect: ${ioClient.id}`);
+      console.log(`socket connect: ${ioClient.id}`);
     })
     ioClient.on('user:connect', () => {
       console.log(`socket connect: ${ioClient.id}`);
@@ -70,10 +65,9 @@ function App() {
       updateMessages(msg)
     })
     ioClient.on('user:room-joined', (room:string) => {
-      if(staticRooms.includes(room)) return
+      if(rooms.includes(room)) return
       console.log(`${ioClient.id} joined room: ${room}`);
-      staticRooms = [...staticRooms, room]
-      setRooms([...staticRooms])
+      setRooms((list)=>[...list,room])
       setRoom('');
     })
 
