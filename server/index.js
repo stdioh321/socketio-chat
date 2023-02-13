@@ -16,36 +16,16 @@ const io = socketIo(server, {
 })
 const rooms = []
 io.on('connect', (socket) => {
-  console.log(`Someone connected: ${socket.id}`);
-  socket.on('user:message-send', (message, rooms = [], cb) => {
-    const data = {
-      id:socket.id,
-      message: message,
-      room: rooms,
-      createdAt: new Date()
-    };
-    if(rooms.length){
-      socket.emit('user:message-received', data)
-      rooms.forEach(it=>{
-        socket.to(it).emit('user:message-received', data)
-      })
-    }
-    else
-      io.emit('user:message-received', data)
-
-    cb()
-  })
-  socket.on('user:room-join', (room, cb = ()=>{}) => {
-    if(!room) return
-    room = room.toLowerCase()
+  socket.on('join_room', (username, room, cb) => {
+    console.log(`[${socket.id}] joined the room [${room}]`);
     socket.join(room)
-    socket.emit('user:room-joined', room)
     cb()
   })
-  socket.on('user:room-leave', (room, cb) => {
-    if(!room) return
-    room = room.toLowerCase()
-    socket.leave(room)
+  socket.on('send_message', (data, cb) => {
+    data.createdAt = new Date()
+    console.log(`message received from [${socket.id}]`, data);
+    io.to(data.room).emit('received_message', data)
+    // io.sockets.emit('received_message', data)
     cb()
   })
 })

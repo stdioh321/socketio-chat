@@ -1,16 +1,19 @@
+import MessageDto from "../MessageDto"
 import './Message.css'
-import moment from 'moment'
-export default function Message(props) {
-  const {id, message, room, me=false, createdAt} = props
-  let theDate
-  if(createdAt) theDate = moment(createdAt).format('YYYY-MM-DD HH:mm:ss')
 
-  return <div className={`message-wrapper ${me ? 'me' : ''}`} >
-    <div className="content">
-      <div hidden={me} className='user'>{me ? 'you': id}</div>
-      <div className='message'>{message}</div>
-      <div className='room'>{room.join(',')}</div>
-      <div className='created-at'>{theDate || ''}</div>
+export default function Message(props){
+  const { socket } = props
+  const data: MessageDto = props.data
+  const isYou: boolean = data.id === socket.id ? true : false
+
+  return <div className={`message-container ${isYou === true ? 'you' : 'other'}`}>
+    <div className={`message-wrapper `}>
+      <div className="message-header">{isYou === true  ? '' : data.username}</div>
+      <div className="message-body">{data.message}</div>
+      <div className="message-footer">
+        <div className="room">{data.room}</div>
+        <div className="created-at">{data.createdAt}</div>
+      </div>
     </div>
   </div>
 }

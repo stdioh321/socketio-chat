@@ -1,36 +1,41 @@
-.message-wrapper{
+.message-container{
   display: flex;
+  flex-wrap: wrap;
+}
+.message-container.other{
   justify-content: flex-start;
 }
-.message-wrapper.me{
+.message-container.you{
   justify-content: flex-end;
 }
-.message-wrapper.me .content{
-  background-color: #24bf41;
+.message-container.you .message-body{
+  background-color: green;
 }
-.content{
+.message-wrapper{
   max-width: 70%;
-  min-width: 200px;
-  padding: 5px;
-  display: flex;
-  flex-direction: column;
-  background-color: #2596be;
-  border-radius: 5px;
+  min-width: 250px;
 }
-.user {
-  font-size: 10px;
+.message-body{
+  background-color: cadetblue;
   color: white;
-}
-.message{
-  
-}
-.room{
+  border-radius: 5px;
   text-align: right;
-  font-size: 9px;
-  font-style:bold;
+  padding: 5px;
 }
-.created-at{
-  text-align: right;
-  font-size: 10px;
-  font-style:italic;
+.message-header{
+  font-size: 11px;
+  font-style: bold;
+}
+.message-footer{
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.message-footer > *{
+  font-size: 11px;
+  font-style: italic;
+  color: #333;
+}
+.message-footer > *.room{
+  margin-right: 5px;
 }
