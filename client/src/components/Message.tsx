@@ -14,7 +14,7 @@ export default function Message(props){
       <div className="message-footer">
         <div className="room">{data.room}</div>
         <div className="created-at">
-          {toFormatedDate(data.createdAt)}
+          {toFormatedDate(data?.createdAt)}
         </div>
       </div>
     </div>

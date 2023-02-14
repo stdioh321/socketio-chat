@@ -1,11 +1,12 @@
 import moment from 'moment'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MessageDto from '../MessageDto';
 import Message from './Message';
 import './Chat.css';
 export default function Chat(props) {
-  const {socket, user} = props
+  const chatBody = useRef(null);
 
+  const {socket, user} = props
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<MessageDto[]>([]);
 
@@ -18,7 +19,7 @@ export default function Chat(props) {
       socket.off('received_message')
     }
   },[])
-  const onSendMessage = (event)=>{
+  const onSendMessage = ( event )=>{
     event.preventDefault();
     if(!message) return
     const messageDto = new MessageDto()
@@ -30,6 +31,7 @@ export default function Chat(props) {
     socket.emit('send_message', messageDto, () => {
       console.log('Message sent');
       setMessage('')
+      chatBody.current?.scrollTo(0, chatBody.current?.scrollHeight);
     })
   }
   return <div>
@@ -40,7 +42,7 @@ export default function Chat(props) {
           <div>room: {user?.room}</div>
         </h4>
       </div>
-      <div className="chat-body">
+      <div className="chat-body" ref={chatBody}>
         {messages.map( (it, idx) => {
           return <div key={idx} className={`${it.id === socket.id ? 'me' : 'other'}`}>
             <Message data={it} socket={socket} />

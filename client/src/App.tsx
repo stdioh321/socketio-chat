@@ -15,10 +15,10 @@ function App() {
   },[user])
   return (<div className='container'>
     <div className="row">
-      <div  className={`col-md-6 offset-md-3 ${user ? 'd-none' : null}`}>
+      <div  className={`col-md-8 offset-md-2 ${user ? 'd-none' : null}`}>
         <JoinRoom socket={ioClient} setUser={setUser} />
       </div>
-      <div  className={`col-md-6 offset-md-3 ${user ? null : 'd-none'}`}>
+      <div  className={`col-md-8 offset-md-2 ${user ? null : 'd-none'}`}>
         <Chat socket={ioClient} user={user} />
       </div>
     </div>
