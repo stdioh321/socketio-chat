@@ -15,12 +15,12 @@ function App() {
   },[user])
   return (<div className='container'>
     <div className="row">
-      <div  className={`col-md-8 offset-md-2 ${user ? 'd-none' : null}`}>
+      {!user && (<div  className={`col-md-8 offset-md-2`}>
         <JoinRoom socket={ioClient} setUser={setUser} />
-      </div>
-      <div  className={`col-md-8 offset-md-2 ${user ? null : 'd-none'}`}>
-        <Chat socket={ioClient} user={user} />
-      </div>
+      </div>)}
+      {user && (<div  className={`col-md-8 offset-md-2`}>
+        <Chat socket={ioClient} user={user} setUser={setUser} />
+      </div>)}
     </div>
   </div>)
 }

@@ -21,7 +21,7 @@ export default function Chat(props) {
   },[])
   const onSendMessage = ( event )=>{
     event.preventDefault();
-    if(!message) return
+    if(!message?.trim()) return
     const messageDto = new MessageDto()
     messageDto.id = socket.id;
     messageDto.message = message;
@@ -34,6 +34,11 @@ export default function Chat(props) {
       chatBody.current?.scrollTo(0, chatBody.current?.scrollHeight);
     })
   }
+
+  const onLeave = ()=>{
+    props.setUser(null)
+  }
+
   return <div>
     <div className="chat-container">
       <div className="chat-header">
@@ -60,6 +65,11 @@ export default function Chat(props) {
         <button className="btn btn-primary w-100" disabled={!message}>Send</button>
       </div>
       </form>
+      <div className="row mt-3">
+        <div className="offset-md-9 col-md-3 offset-8">
+          <button className="btn btn-danger w-100" onClick={onLeave}>Leave</button>
+        </div>
+      </div>
       </div>
     </div>
   </div>
